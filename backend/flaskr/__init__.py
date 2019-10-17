@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
 
-from models import *
+from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 def paginate_questions(request, selection):
@@ -12,7 +12,7 @@ def paginate_questions(request, selection):
   start =  (page - 1) * QUESTIONS_PER_PAGE
   end = start + QUESTIONS_PER_PAGE
 
-  questions = [Question.format() for question in selection]
+  questions = [question.format() for question in selection]
   current_questions = questions[start:end]
 
   return current_questions
@@ -41,6 +41,16 @@ def create_app(test_config=None):
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
+  @app.route('/categories')
+  def retrieve_categories():
+    all_categories = Category.query.all()
+    formatted_categories = [category.format() for category in all_categories]
+
+    return jsonify({
+      'success': True,
+      'categories': formatted_categories,
+      'total_categories': len(Category.query.all())
+    })
 
 
   '''

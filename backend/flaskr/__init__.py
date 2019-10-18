@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -163,25 +163,32 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
-  @app.route('/searchQuestion', methods=['POST'])
+  @app.route("/searchQuestions", methods=['POST'])
   def search_questions():
-    body = request.get_json()
-
-    search_term = body.get['search_term']
-    try:
-      questions = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
-      if questions:
-        result = paginate_questions(request, questions)
-
-      
-
-      return jsonify({
-        'success': True,
-        'questions': result,
-        'total_questions': len(formatted_questions)
-      })
-
-    except:
+      if request.data:
+          page = 1
+          if request.args.get('page'):
+              page = int(request.args.get('page'))
+          search_data = json.loads(request.data.decode('utf-8'))
+          if 'searchTerm' in search_data:
+              questions_query = Question.query.filter(
+                  Question.question.like(
+                      '%' +
+                      search_data['searchTerm'] +
+                      '%')).paginate(
+                  page,
+                  QUESTIONS_PER_PAGE,
+                  False)
+              questions = list(map(Question.format, questions_query.items))
+              if len(questions) > 0:
+                  result = {
+                      "success": True,
+                      "questions": questions,
+                      "total_questions": questions_query.total,
+                      "current_category": None,
+                  }
+                  return jsonify(result)
+          abort(404)
       abort(422)
 
   

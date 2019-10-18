@@ -41,16 +41,14 @@ def create_app(test_config=None):
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
-  @app.route('/categories')
-  def retrieve_categories():
-    all_categories = Category.query.all()
-    formatted_categories = [category.format() for category in all_categories]
-
-    return jsonify({
-      'success': True,
-      'categories': formatted_categories,
-      'total_categories': len(Category.query.all())
-    })
+  @app.route("/categories")
+  def get_categories():
+      categories = list(map(Category.format, Category.query.all()))
+      result = {
+          "success": True,
+          "categories": categories
+      }
+      return jsonify(result)
 
 
   '''
@@ -129,13 +127,13 @@ def create_app(test_config=None):
   @app.route("/questions", methods=['POST'])
   def add_question():
     body = request.get_json()
-
+    
     new_question = body.get('question', None)
     new_answer = body.get('answer', None)
     new_category = body.get('category', None)
     new_difficulty = body.get('difficulty', None)
-
     try:
+
       question = Question(question=new_question,answer=new_answer, category=new_category, difficulty=new_difficulty)
       question.insert()
 

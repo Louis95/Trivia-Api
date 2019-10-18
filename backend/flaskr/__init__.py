@@ -126,7 +126,7 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
-  @app.route('/questions', methods=['POST'])
+  @app.route("/questions", methods=['POST'])
   def add_question():
     body = request.get_json()
 
@@ -137,7 +137,7 @@ def create_app(test_config=None):
 
     try:
       question = Question(question=new_question,answer=new_answer, category=new_category, difficulty=new_difficulty)
-      book.insert()
+      question.insert()
 
       selection = Question.query.order_by(Question.id).all()
       current_questions = paginate_questions(request, selection)
@@ -201,6 +201,27 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that 
   category to be shown. 
   '''
+  @app.route("/categories/<int:category_id>/questions")
+  def get_question_by_category(category_id):
+      category_data = Category.query.get(category_id)
+      page = 1
+      if request.args.get('page'):
+          page = int(request.args.get('page'))
+      categories = list(map(Category.format, Category.query.all()))
+      questions_query = Question.query.filter_by(
+          category=category_id).paginate(
+          page, QUESTIONS_PER_PAGE, False)
+      questions = list(map(Question.format, questions_query.items))
+      if len(questions) > 0:
+          result = {
+              "success": True,
+              "questions": questions,
+              "total_questions": questions_query.total,
+              "categories": categories,
+              "current_category": Category.format(category_data),
+          }
+          return jsonify(result)
+      abort(404)
 
 
   '''

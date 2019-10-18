@@ -41,30 +41,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
         self.assertTrue(len(data["categories"]))
 
-    def test_get_paginated_questions(self):
-        res = self.client().get('/questions?page=1')
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data["success"], True)
-        self.assertTrue(data["total_questions"])
-        self.assertTrue(len(data["categories"]))
-        self.assertTrue(len(data["questions"]))
-
-    def test_404_get_paginated_questions_beyond_valid_page(self):
-        res = self.client().get('/questions?page=100')
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "Resource not found")
-
+    #
     def test_delete_question(self):
-        res = self.client().delete('/questions/2')
+        res = self.client().delete('/questions/28')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
+
+
 
     def test_404_delete_question(self):
         res = self.client().delete('/questions/90')

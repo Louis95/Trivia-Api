@@ -71,6 +71,8 @@ def create_app(test_config=None):
   def retrieve_questions():
     selection = Question.query.order_by(Question.id).all()
     current_questions = paginate_questions(request, selection)
+    categories = list(map(Category.format, Category.query.all()))
+
 
     if len(current_questions) == 0:
       abort(404)
@@ -78,7 +80,9 @@ def create_app(test_config=None):
     return jsonify({
       'success': True,
       'questions': current_questions,
-      'total_questions': len(Question.query.all())
+      'total_questions': len(Question.query.all()),
+      'categories': categories,
+      'current_category': None,
     })
 
   '''
@@ -123,7 +127,7 @@ def create_app(test_config=None):
   of the questions list in the "List" tab.  
   '''
   @app.route('/questions', methods=['POST'])
-  def create_question():
+  def add_question():
     body = request.get_json()
 
     new_question = body.get('question', None)
@@ -159,6 +163,28 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
+  @app.route('/searchQuestion', methods=['POST'])
+  def search_questions():
+    body = request.get_json()
+
+    search_term = body.get['search_term']
+    try:
+      questions = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
+      if questions:
+        result = paginate_questions(request, questions)
+
+      
+
+      return jsonify({
+        'success': True,
+        'questions': result,
+        'total_questions': len(formatted_questions)
+      })
+
+    except:
+      abort(422)
+
+  
 
   '''
   @TODO: 

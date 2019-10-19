@@ -88,7 +88,195 @@ GET '/categories'
 '6' : "Sports"}
 
 ```
+## API Endpoints Documentation
+-----
 
+GET `'/categories'`
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+- Request Argument: None
+- Returns: An object with a strig key, categories, that contains an object of id: category_string key:value pairs.
+```
+{
+{'1' : "Science",
+'2' : "Art",
+'3' : "Geography",
+'4' : "History",
+'5' : "Entertainment",
+'6' : "Sports"}
+
+}
+```
+
+GET `/questions?page=<page_number>`
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category.
+- Fetches a dictionary of questions in which the keys are the answer, category, difficulty, id and question.
+- Request Arguments: Page Number
+- Returns: List of questions, number of total questions, current category and categories.
+
+example Response:
+`
+{
+  "categories": [
+    {
+      "id": 1, 
+      "type": "Science"
+    }, 
+    {
+      "id": 2, 
+      "type": "Art"
+    }, 
+    {
+      "id": 3, 
+      "type": "Geography"
+    }, 
+    {
+      "id": 4, 
+      "type": "History"
+    }, 
+    {
+      "id": 5, 
+      "type": "Entertainment"
+    }, 
+    {
+      "id": 6, 
+      "type": "Sports"
+    }
+  ], 
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "Agra", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 15, 
+      "question": "The Taj Mahal is located in which Indian city?"
+    }, 
+    {
+      "answer": "Escher", 
+      "category": 2, 
+      "difficulty": 1, 
+      "id": 16, 
+      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+    }, 
+    {
+      "answer": "Mona Lisa", 
+      "category": 2, 
+      "difficulty": 3, 
+      "id": 17, 
+      "question": "La Giaconda is better known as what?"
+    }, 
+    {
+      "answer": "One", 
+      "category": 2, 
+      "difficulty": 4, 
+      "id": 18, 
+      "question": "How many paintings did Van Gogh sell in his lifetime?"
+    }, 
+    {
+      "answer": "Jackson Pollock", 
+      "category": 2, 
+      "difficulty": 2, 
+      "id": 19, 
+      "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+    }, 
+    {
+      "answer": "The Liver", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    {
+      "answer": "Alexander Fleming", 
+      "category": 1, 
+      "difficulty": 3, 
+      "id": 21, 
+      "question": "Who discovered penicillin?"
+    }, 
+    {
+      "answer": "Blood", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 22, 
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }, 
+    {
+      "answer": "Scarab", 
+      "category": 4, 
+      "difficulty": 4, 
+      "id": 23, 
+      "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+    }, 
+    {
+      "answer": "Yaounde", 
+      "category": 3, 
+      "difficulty": 1, 
+      "id": 28, 
+      "question": "What is the capital of Cameroon"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 20
+}
+`
+
+DELETE `/questions/<question_id>`
+- Delete question from the questions list.
+- Request Arguments: Question Id
+- Returns: true if successfully deleted.
+Example Response `{"success":true}`
+
+POST `/questions`
+- Create a new question
+- Request Body: question, answer, difficulty and category.
+- Returns: true if successfully created.
+- Example Request Payload {"question":"test question","answer":"test answer","difficulty":"3","category":1}
+
+Example Response `{"success":true}`
+
+POST `/searchQuestions`
+- Searches for the questions
+- Request Arguments: Page Number
+- Request Body: search_data
+- Returns: List of questions, number of total questions and current category.
+- Example Request Payload `{"searchTerm":"what"}`
+example response `	bundle.js	1.chunk.js	main.chunk.js	main.cf53cd169c3ae961060f.hot-update.js	questions?page=1	science.svg	art.svg	geography.svg	manifest.json	history.svg	entertainment.svg	sports.svg	[object%20Object].svg	delete.png	info?t=1571439437660	websocket	searchQuestions?page=1	[object%20Object].svg	
+19 requests
+6.4 KB transferred
+2.2 MB resources
+Finish: 1.4 hrs
+DOMContentLoaded: 1.68 s
+Load: 1.76 s
+{current_category: null, questions: [{answer: "Mona Lisa", category: 2, difficulty: 3, id: 17,…},…],…}
+current_category: null
+questions: [{answer: "Mona Lisa", category: 2, difficulty: 3, id: 17,…},…]
+0: {answer: "Mona Lisa", category: 2, difficulty: 3, id: 17,…}
+answer: "Mona Lisa"
+category: 2
+difficulty: 3
+id: 17
+question: "La Giaconda is better known as what?"
+1: {answer: "Blood", category: 1, difficulty: 4, id: 22,…}
+answer: "Blood"
+category: 1
+difficulty: 4
+id: 22
+question: "Hematology is a branch of medicine involving the study of what?"
+success: true
+total_questions: 2`
+
+GET `/categories/<int:category_id>/questions`
+- To get questions based on category
+- Request Arguments: Category Id and Page Number.
+- Returns: List of questions, number of total questions, current category and categories.
+
+POST `/quizzes`
+- To get questions to play the quiz.
+- Request Body: quiz_category and previous_questions.
+- Returns: Random questions within the given category.
+Example Request Payload `{"previous_questions":[],"quiz_category":{"type":"Science","id":1}}`
+
+Example Response `{"question":{"answer":"Blood","category":1,"difficulty":4,"id":22,"question":"Hematology is a branch of medicine involving the study of what?"},"success":true}`
 
 ## Testing
 To run the tests, run

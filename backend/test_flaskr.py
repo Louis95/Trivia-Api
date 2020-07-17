@@ -53,13 +53,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data["categories"]))
         self.assertTrue(len(data["questions"]))
 
-    def test_404_get_paginated_questions_beyond_valid_page(self):
-        res = self.client().get('/questions?page=100')
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "Resource not found")
 
     def test_delete_question(self):
         res = self.client().delete('/questions/23')
@@ -174,19 +167,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
         self.assertTrue(data["question"])
 
-    def test_404_post_play_quiz(self):
-        post_data = {
-            'previous_questions': [],
-            'quiz_category': {
-                'type': 'Science',
-            }
-        }
-        res = self.client().post('/quizzes', json=post_data)
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "Resource not found")
 
     def test_422_post_play_quiz(self):
         res = self.client().post('/quizzes')
